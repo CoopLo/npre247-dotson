@@ -1,19 +1,115 @@
-import nucleus 
+import atom
 import numpy as np 
-import pandas as pd 
 import random as rd 
 
 
-def binary_qvalue(projectile, target, heavy, light):
+def charge_sum(atom_list):
 	"""
-	Calculates the q value of a binary nuclear reaction
+	Sums the charges in a list of atom objects
+
+	Parameters: 
+	-----------
+	atom_list : list atom object
+		The list of atoms whose charges you would like to add
+
+	Returns:
+	--------
+	charge : int
+		The total charge given as a number of elementary charges
+	"""
+
+	charge = 0
+
+	for atom in atom_list:
+		charge = charge + atom.charge
+
+	return charge
+
+def mass_sum(atom_list):
+	"""
+	Sums the masses in a list of atom objects
+
+	Parameters: 
+	-----------
+	atom_list : list atom object
+		The list of atoms whose masses you would like to add
+
+	Returns:
+	--------
+	charge : float
+		The total mass in AMU
+	"""
+
+	mass = 0
+
+	for atom in atom_list:
+		mass = mass + atom.mass
+
+	return mass
+
+def charge_balanced(reactants, products):
+	"""
+	Checks that charge is conserved in a nuclear reaction.
 
 	Parameters:
 	-----------
-	projectile : nucleus object, float.
-		nucleus object is a nucleus projectile, charged
-		float is a photon energy, uncharged.
-	target : nucleus oject
+	reactants : list atom object
+		a list of the atoms in a nuclear reaction
+	products : list atom object
+		a list of the atoms produced by a nuclear reaction 
+
+	Returns:
+	--------
+	Boolean
+	"""
+
+	if charge_sum(reactants) == charge_sum(products):
+		return True
+	else:
+		return False
+
+def balance_charge(reactants, products):
+	"""
+	Balances the charge by adding electrons to one side until charge is balanced.
+
+	Parameters: 
+	-----------
+	reactants : list atom object
+		a list of the atoms in a nuclear reaction
+	products : list atom object
+		a list of the atoms produced by a nuclear reaction
+
+	Returns:
+	--------
+	reac_balanced, prod_balanced: 
+		These are a list of atom objects that have balanced charge between them.
+	"""
+
+	reac_balanced = reactants
+	prod_balanced = products
+
+	e = atom.electron
+
+	while not charge_balanced(reac_balanced, prod_balanced):
+
+		if charge_sum(reac_balanced) < charge_sum(prod_balanced):
+			prod_balanced.append(e) #adds electron to products.
+		else:
+			reac_balanced.append(e)
+
+	return reac_balanced, prod_balanced
+
+
+def qvalue(reactants, products):
+	"""
+	Calculates the q value of a binary nuclear reaction
+
+	Parameters: 
+	-----------
+	reactants : list atom object
+		a list of the atoms in a nuclear reaction
+	products : list atom object
+		a list of the atoms produced by a nuclear reaction
 
 	Returns:
 	--------
@@ -22,43 +118,35 @@ def binary_qvalue(projectile, target, heavy, light):
 	"""
 	MeV = 931.5 # a conversion factor 
 
-	if isinstance(projectile, nucleus.nucleus):
-		qvalue = ((projectile.mass + target.mass) - (heavy.mass+light.mass))
-		return qvalue*MeV
+	if charge_balanced(reactants, products):
+		qvalue = mass_sum(reactants) - mass_sum(products)
+
+	else:
+		reac_balanced, prod_balanced = balance_charge(reactants, products)
+		qvalue = mass_sum(reac_balanced) - mass_sum(prod_balanced)
+
+	return qvalue*MeV
 
 
 if __name__ == '__main__':
 	
-	C13 = nucleus.nucleus([13, 6, 13.003354])
-	C12 = nucleus.nucleus([12, 6, 12.0])
-	C14 = nucleus.nucleus([14, 6, 14.003241988])
-	N14 = nucleus.nucleus([14, 7, 14.0030740052])
+	C13 = atom.atom([13, 6, 13.0033548378])
+	C12 = atom.atom([12, 6, 12.0])
+	C14 = atom.atom([14, 6, 14.003241988])
+	N14 = atom.atom([14, 7, 14.0030740052])
 	
 	
 
-	proton = nucleus.nucleus([1, 1, 1.0078250321])
-	neutron = nucleus.nucleus([1, 0, 1.0086649233])
+	proton = atom.atom([1, 1, 1.0078250321], charge = 1)
 
-	deuteron = nucleus.nucleus([2, 1, 2.0135532127])
-	tritium = nucleus.nucleus([3, 1, 3.0160492])
 
-	O16 = nucleus.nucleus([16, 8, 15.994915])
-	He4 = nucleus.nucleus([4, 2, 4.002603])
+	deuteron = atom.atom([2, 1, 2.0135532127], charge = 1)
+	tritium = atom.atom([3, 1, 3.0160492])
 
-	Be11 = nucleus.nucleus([11, 4, 11.021658])
+	O16 = atom.atom([16, 8, 15.994915])
 
-	# print(neutron.mass)
-	# print(O16.mass)
-	# print(C13.mass)
-	# print(He4.mass)
+	B11 = atom.atom([11, 5, 11.0093055])
 
-	q = binary_qvalue(neutron, O16, C13, He4) #this one agrees with the answer in the book
-	q2 = binary_qvalue(deuteron, C13, C12, tritium) #this one disagrees??? should be 1.311 MeV
-	q3 = binary_qvalue(proton, C14, N14, neutron)#this one agrees with the answer in the book
-	q4 = binary_qvalue(neutron, N14, Be11, He4)#this one disagrees??? should be -0.1582 MeV
-	print(deuteron.mass)
-	print(tritium.mass)
-	print(q)
-	print(q2)
-	print(q3)
-	print(q4)
+
+	print(qvalue([C13, deuteron],[C12, tritium]))
+	print(qvalue([N14, atom.neutron],[B11, atom.alpha]))
