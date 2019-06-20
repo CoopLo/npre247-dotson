@@ -88,7 +88,6 @@ proton = atom([1, 1, 1.007825], charge = 1)
 alpha = atom([4, 2, 4.0012], charge = 2)
 
 
-
 if __name__ == '__main__':
 	
 	path = "ptable.csv"
@@ -97,4 +96,4 @@ if __name__ == '__main__':
 	Li = atom(get_element('Li', ptable))
 	electron = atom([0, 0, 0.00054858], charge = -1)
 
-	print(electron.mass, electron.charge)
+	pass

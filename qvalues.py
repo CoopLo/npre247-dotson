@@ -101,6 +101,30 @@ def balance_charge(reactants, products):
 
 	return reac_balanced, prod_balanced
 
+def decay(atom, kind='alpha'):
+	"""
+	Accepts a parent atom and returns daughters depending on the type 
+	of decay specified.
+
+	Parameters:
+	-----------
+	atom : atom object
+		The parent atom/nucleus.
+	kind : str
+		Specifies the type of decay.
+		Default is 'alpha'.
+		Accepts: 'alpha'
+
+	Returns:
+	--------
+	daughters : atom object or list of atom objects
+		The daughters of the specified decay mode.
+	"""
+
+	if kind == 'alpha':
+		pass
+	return
+
 
 def qvalue(reactants, products):
 	"""
