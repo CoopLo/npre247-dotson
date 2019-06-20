@@ -94,8 +94,10 @@ def balance_charge(reactants, products):
 
 		if charge_sum(reac_balanced) < charge_sum(prod_balanced):
 			prod_balanced.append(e) #adds electron to products.
+			print("added electron to products")
 		else:
 			reac_balanced.append(e)
+			print("added electron to the reactants")
 
 	return reac_balanced, prod_balanced
 
@@ -133,20 +135,18 @@ if __name__ == '__main__':
 	C13 = atom.atom([13, 6, 13.0033548378])
 	C12 = atom.atom([12, 6, 12.0])
 	C14 = atom.atom([14, 6, 14.003241988])
-	N14 = atom.atom([14, 7, 14.0030740052])
-	
-	
-
-	proton = atom.atom([1, 1, 1.0078250321], charge = 1)
-
-
+	N14 = atom.atom([14, 7, 14.003074])
+	He4 = atom.atom([4, 2, 4.002603])
 	deuteron = atom.atom([2, 1, 2.0135532127], charge = 1)
 	tritium = atom.atom([3, 1, 3.0160492])
-
 	O16 = atom.atom([16, 8, 15.994915])
-
 	B11 = atom.atom([11, 5, 11.0093055])
 
 
-	print(qvalue([C13, deuteron],[C12, tritium]))
-	print(qvalue([N14, atom.neutron],[B11, atom.alpha]))
+
+	print("13C(d,t)12C")
+	print("q = ",qvalue([C13, deuteron],[C12, tritium]),"\n") #this is correct
+	print("14N(n, alpha)11B --> using alpha and two electrons")
+	print("q = ",qvalue([N14, atom.neutron],[B11, atom.alpha]),"\n") #this is incorrect
+	print("14N(n, alpha)11B --> using 4He")
+	print("q = ", qvalue([N14, atom.neutron], [B11, He4]), "\n")

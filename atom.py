@@ -83,8 +83,8 @@ def get_element(identifier, ptable):
 
 #define commonly used atomic constituents
 electron = atom([0, 0, 0.00054858], charge = -1)
-neutron = atom([1, 0, 1.0086649233])
-proton = atom([1, 1, 1.0078250321], charge = 1)
+neutron = atom([1, 0, 1.008664])
+proton = atom([1, 1, 1.007825], charge = 1)
 alpha = atom([4, 2, 4.0012], charge = 2)
 
 
