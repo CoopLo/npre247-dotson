@@ -1,4 +1,5 @@
 import atom
+import decay
 import numpy as np 
 import random as rd 
 
@@ -47,6 +48,28 @@ def mass_sum(atom_list):
 
 	return mass
 
+def Z_sum(atom_list):
+	"""
+	Sums the protonss in a list of atom objects
+
+	Parameters: 
+	-----------
+	atom_list : list atom object
+		The list of atoms whose protonss you would like to add
+
+	Returns:
+	--------
+	charge : int
+		The total Z number
+	"""
+
+	Z = 0
+
+	for atom in atom_list:
+		Z = Z + atom.Z
+
+	return Z
+
 def charge_balanced(reactants, products):
 	"""
 	Checks that charge is conserved in a nuclear reaction.
@@ -64,6 +87,27 @@ def charge_balanced(reactants, products):
 	"""
 
 	if charge_sum(reactants) == charge_sum(products):
+		return True
+	else:
+		return False
+
+def proton_balanced(reactants, products):
+	"""
+	Checks that proton number is conserved in a nuclear reaction.
+
+	Parameters:
+	-----------
+	reactants : list atom object
+		a list of the atoms in a nuclear reaction
+	products : list atom object
+		a list of the atoms produced by a nuclear reaction 
+
+	Returns:
+	--------
+	Boolean
+	"""
+
+	if Z_sum(reactants) == Z_sum(products):
 		return True
 	else:
 		return False
@@ -100,31 +144,6 @@ def balance_charge(reactants, products):
 			print("added electron to the reactants")
 
 	return reac_balanced, prod_balanced
-
-def decay(atom, kind='alpha'):
-	"""
-	Accepts a parent atom and returns daughters depending on the type 
-	of decay specified.
-
-	Parameters:
-	-----------
-	atom : atom object
-		The parent atom/nucleus.
-	kind : str
-		Specifies the type of decay.
-		Default is 'alpha'.
-		Accepts: 'alpha'
-
-	Returns:
-	--------
-	daughters : atom object or list of atom objects
-		The daughters of the specified decay mode.
-	"""
-
-	if kind == 'alpha':
-		pass
-	return
-
 
 def qvalue(reactants, products):
 	"""
@@ -169,8 +188,7 @@ if __name__ == '__main__':
 
 
 	print("13C(d,t)12C")
-	print("q = ",qvalue([C13, deuteron],[C12, tritium]),"\n") #this is correct
-	print("14N(n, alpha)11B --> using alpha and two electrons")
-	print("q = ",qvalue([N14, atom.neutron],[B11, atom.alpha]),"\n") #this is incorrect
+	print("Q = ",qvalue([C13, deuteron],[C12, tritium]),"\n") #this is correct
+
 	print("14N(n, alpha)11B --> using 4He")
-	print("q = ", qvalue([N14, atom.neutron], [B11, He4]), "\n")
+	print("Q = ", qvalue([N14, atom.neutron], [B11, He4]), "\n")
