@@ -1,15 +1,14 @@
 import numpy as np 
 import pandas as pd
-import sys
 
 
 
 class atom(object):
 	"""
-	A atom of an atom, with a charge +Ze.
+	An atom.
 	"""
 
-	def __init__(self, data, energy=0, decay=0, charge=0):
+	def __init__(self, data, excitation=0, decay=0, charge=0):
 		"""
 		Parameters:
 		-----------
@@ -19,8 +18,8 @@ class atom(object):
 			A is the mass number
 			mass is the average mass from the periodic table, 
 			unless otherwise specified, in MeV
-		energy : float
-			The energy of the atom in MeV.
+		excitation : float
+			The excitation energy of the atom in MeV (nucleus only).
 		decay : float, [0, 1]
 			A float between the values [0, 1] inclusive. 
 			Default is none.
@@ -30,20 +29,58 @@ class atom(object):
 			The number of elementary charges an atom has. Non-zero 
 			charge indicates an ion. 
 		"""
+		MeV = 931.5 #conversion factor
+
 		super(atom, self).__init__()
 		self.A = data[0]
 		self.Z = data[1]
 		self.mass = data[2]
 		self.charge = charge 
-
+		
 		#Derived quantities
 		self.N = self.A-self.Z
 		self.electrons = self.Z - self.charge
+		self.rest_mass = self.mass*MeV
+
+		self.energy = excitation + self.rest_mass
+
 
 		assert abs(self.A) - 0.5 < self.mass, "Mass is not close to A" 
 
-	def decay(self):
-		pass
+	def set_energy(self, energy):
+		"""
+		Sets the energy of the atom.
+
+		Parameters:
+		-----------
+		energy : float
+			the new energy of the atom
+
+		Returns : None
+		"""
+
+		assert energy >= self.rest_mass. "Unphysical: energy less than rest mass."
+		
+		self.energy = energy
+		
+		return None
+
+class photon(object):
+	"""
+	A photon 
+	"""
+	def __init__(self, energy):
+		"""
+		Parameters:
+		-----------
+		energy : float
+			The photon energy
+		"""
+		super(photon, self).__init__()
+		self.energy = energy
+
+		#derived quantity
+		
 
 def read_periodic_table(file_path):
 	ptable = pd.read_csv(file_path)

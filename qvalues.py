@@ -145,9 +145,32 @@ def balance_charge(reactants, products):
 
 	return reac_balanced, prod_balanced
 
+def get_products(reactants, kind):
+	"""
+	Gives the products for a specified reaction. 
+
+	Parameters: 
+	-----------
+	reactants : atom object or list of atom objects
+		The atom or list of atoms undergoing a nuclear
+		reaction or decay. 
+	kind : function
+		Specifies the kind of interaction
+		Accepts: 'decay.gamma'
+	Returns:
+	--------
+	products : atom object or list of atom objects
+	"""
+
+	return kind(reactants)
+
+
 def qvalue(reactants, products):
 	"""
 	Calculates the q value of a binary nuclear reaction
+
+	It might be safer to do this in terms of energy -- always.
+	This is because there might be a photon energy 
 
 	Parameters: 
 	-----------
@@ -186,9 +209,13 @@ if __name__ == '__main__':
 	B11 = atom.atom([11, 5, 11.0093055])
 
 
-
 	print("13C(d,t)12C")
 	print("Q = ",qvalue([C13, deuteron],[C12, tritium]),"\n") #this is correct
 
 	print("14N(n, alpha)11B --> using 4He")
 	print("Q = ", qvalue([N14, atom.neutron], [B11, He4]), "\n")
+
+	C13.set_energy(12)
+	print(C13.energy)
+	C13 = get_products(C13, decay.gamma)[0]
+	print(C13.energy)
